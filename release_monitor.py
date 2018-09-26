@@ -108,6 +108,17 @@ class ReleaseMonitor():
         else:
             return True
 
+    def renew_rss_feeds(self):
+        if sorted(self.old_pypi_feed.entries) == sorted(self.pypi_feed.entries):
+            self.pypi_feed = feedparser.parse(PYPI_URL + "rss/updates.xml")
+        else:
+            self.old_pypi_feed = self.pypi_feed
+
+        if sorted(self.old_npm_feed.entries) == sorted(self.npm_feed.entries):
+            self.npm_feed = feedparser.parse(NPM_URL + "-/rss")
+        else:
+            self.old_pypi_feed = self.pypi_feed
+
     def run(self):
         while True:
             for i in self.npm_feed.entries:
@@ -131,6 +142,10 @@ class ReleaseMonitor():
                     print({'package_name': package_name,
                            'latest_version': package_latest_version
                            })
+
+        self.renew_rss_feeds()
+
+
 
 
 if __name__ == '__main__':
