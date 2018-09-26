@@ -1,11 +1,16 @@
 #!/usr/bin/python3
+
+"""Project setup file for the release monitor project."""
+
 import os
 
 from setuptools import setup, find_packages
 
 
 def get_requirements():
-    requirements_txt = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
+    """Gather requirements for the module."""
+    requirements_txt = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
     with open(requirements_txt) as fd:
         lines = fd.read().splitlines()
 
@@ -29,7 +34,8 @@ setup(
     description='fabric8-analytics pypi npm new releases monitor',
     license='ASL 2.0',
     keywords='fabric8 analytics firehose libraries.io',
-    url='https://github.com/fabric8-analytics/fabric8-analytics-release-monitor',
+    url='https://github.com/fabric8-analytics/'
+        'fabric8-analytics-release-monitor',
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
