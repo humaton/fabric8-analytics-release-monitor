@@ -12,14 +12,17 @@ RUN yum --setopt=tsflags=nodocs install -y epel-release && \
 
 RUN mkdir -p /home/release_monitor/
 
-COPY . /home/release_monitor/
+COPY . /tmp/release_monitor/
+COPY hack/run_release_monitor.sh /usr/bin/
 
-WORKDIR /home/release_monitor/
-
-RUN pip3 install --upgrade pip && pip install --upgrade wheel && \
-    pip3 install -r /home/release_monitor/requirements.txt && \
-    pip3 install git+https://github.com/fabric8-analytics/fabric8-analytics-worker.git@${F8A_WORKER_VERSION}
+RUN pushd /tmp/release_monitor/ && \
+    pip3 install --upgrade pip && pip install --upgrade wheel && \
+    pip3 install . && \
+    pip3 install -r /tmp/release_monitor/requirements.txt && \
+    pip3 install git+https://github.com/fabric8-analytics/fabric8-analytics-worker.git@${F8A_WORKER_VERSION} && \
+    popd && \
+    rm -rf /tmp/release_monitor
 
 USER coreapi
 
-CMD ["python3", "/home/release_monitor/release_monitor.py"]
+CMD ["/usr/bin/run_release_monitor.sh"]
