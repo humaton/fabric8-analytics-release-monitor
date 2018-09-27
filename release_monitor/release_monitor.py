@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def handler(signum, frame):
-    """Handler for the liveness probe."""
+    """Handle the liveness probe."""
     logger.debug("Running Liveness Probe")
     if ENABLE_SCHEDULING:
         run_flow('livenessFlow', [None])
@@ -160,7 +160,7 @@ class ReleaseMonitor():
                                               'pypi', package_latest_version)
 
         self.renew_rss_feeds()
-        sleep(SLEEP_INTERVAL)
+        sleep(60*SLEEP_INTERVAL)
 
 
 if __name__ == '__main__':

@@ -33,7 +33,7 @@ setup(
     author_email='thrcka@redhat.com',
     description='fabric8-analytics pypi npm new releases monitor',
     license='ASL 2.0',
-    keywords='fabric8 analytics firehose libraries.io',
+    keywords='fabric8 analytics',
     url='https://github.com/fabric8-analytics/'
         'fabric8-analytics-release-monitor',
     classifiers=[

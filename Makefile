@@ -1,3 +1,11 @@
+ifeq ($(TARGET),rhel)
+  DOCKERFILE := Dockerfile.rhel
+  REPOSITORY := openshiftio/rhel-fabric8-analytics-f8a-firehose-fetcher
+else
+  DOCKERFILE := Dockerfile
+  REPOSITORY := openshiftio/fabric8-analytics-f8a-firehose-fetcher
+endif
+
 REGISTRY?=quay.io
 REPOSITORY?=fabric8-analytics/f8a-release-monitor
 DEFAULT_TAG=latest
@@ -14,9 +22,10 @@ fast-docker-build:
 	docker build -t $(REGISTRY)/$(REPOSITORY):$(DEFAULT_TAG) .
 
 fast-docker-build-tests:
-	docker build -t f8a-release-monitor-tests -f Dockerfile .
+	docker build -t $(REGISTRY)/$(REPOSITORY):$(DEFAULT_TAG) -f $(DOCKERFILE) .
+	docker tag $(REGISTRY)/$(REPOSITORY):$(DEFAULT_TAG) f8a-release-monitor-tests
 
-test: fast-docker-build
+test: fast-docker-build-tests
 	./runtest.sh
 
 get-image-name:

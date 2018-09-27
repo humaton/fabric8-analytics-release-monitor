@@ -124,12 +124,6 @@ objects:
       service: f8a-release-monitor
 
 parameters:
-- description: URL where libraries.io Firehose stream is running
-  displayName: Firehose Stream URL
-  required: true
-  name: FIREHOSE_STREAM_URL
-  value: "https://firehose.libraries.io/events"
-
 - description: Docker registry where the image is
   displayName: Docker registry
   required: true
