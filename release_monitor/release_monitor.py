@@ -10,18 +10,19 @@ import sys
 import time
 
 import feedparser
+import psutil
 import requests
 from f8a_worker.setup_celery import init_celery, init_selinon
 from selinon import run_flow
 
-from defaults import NPM_URL, PYPI_URL, ENABLE_SCHEDULING, \
+from release_monitor.defaults import NPM_URL, PYPI_URL, ENABLE_SCHEDULING, \
     PROBE_FILE_LOCATION, SLEEP_INTERVAL
 
 logger = logging.getLogger(__name__)
 
 
 def handler(signum, frame):
-    """Handler for the liveness probe."""
+    """Handle the liveness probe."""
     logger.debug("Running Liveness Probe")
     if ENABLE_SCHEDULING:
         run_flow('livenessFlow', [None])
@@ -129,6 +130,8 @@ class ReleaseMonitor():
 
     def run(self):
         """Run the monitor."""
+        signal.signal(signal.SIGUSR1, handler)
+        self.log.info("Registered signal handler for liveness probe")
         while True:
             for i in self.npm_feed.entries:
                 package_name = i['title']
@@ -157,7 +160,7 @@ class ReleaseMonitor():
                                               'pypi', package_latest_version)
 
         self.renew_rss_feeds()
-        sleep(SLEEP_INTERVAL)
+        sleep(60*SLEEP_INTERVAL)
 
 
 if __name__ == '__main__':
