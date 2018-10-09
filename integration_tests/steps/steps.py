@@ -10,7 +10,8 @@ def step_impl(context):
 def step_impl(context, count, registry):
     event_count = 0
     for e in context.release_monitor.logs(stream=True):
-        if "Processing package from {registry}".format(registry=registry) in e.decode('utf-8'):
+        if "Processing package from {registry}".\
+                format(registry=registry) in e.decode('utf-8'):
             event_count = event_count + 1
 
         if event_count >= int(count):

@@ -2,7 +2,10 @@
 
 
 def setup_module(module):
-    """Perform setup of any state specific to the execution of the given module."""
+    """
+        Perform setup of any state specific
+        to the execution of the given module.
+    """
     global ENABLE_SCHEDULING
     global SLEEP_INTERVAL
     global PYPI_URL
