@@ -4,7 +4,7 @@ import docker
 def before_all(context):
     client = docker.from_env(version="auto")
     context.release_monitor = client.containers.run(
-        "f8a-release-monitor-tests",
+        "fabric8-analytics-release-monitor-tests",
         environment=["ENABLE_SCHEDULING=0"],
         detach=True
     )
