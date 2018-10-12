@@ -1,25 +1,41 @@
 #!/bin/bash -ex
 
 load_jenkins_vars() {
-    if [ -e "jenkins-env" ]; then
-        cat jenkins-env \
-          | grep -E "(DEVSHIFT_TAG_LEN|DEVSHIFT_USERNAME|DEVSHIFT_PASSWORD|JENKINS_URL|GIT_BRANCH|GIT_COMMIT|BUILD_NUMBER|ghprbSourceBranch|ghprbActualCommit|BUILD_URL|ghprbPullId)=" \
-          | sed 's/^/export /g' \
-          > ~/.jenkins-env
-        source ~/.jenkins-env
+    if [ -e "jenkins-env.json" ]; then
+        eval "$(./env-toolkit load -f jenkins-env.json \
+                DEVSHIFT_TAG_LEN \
+                QUAY_USERNAME \
+                QUAY_PASSWORD \
+                JENKINS_URL \
+                GIT_BRANCH \
+                GIT_COMMIT \
+                BUILD_NUMBER \
+                ghprbSourceBranch \
+                ghprbActualCommit \
+                BUILD_URL \
+                ghprbPullId)"
     fi
 }
 
 prep() {
     yum -y update
-    yum -y install epel-release
+    yum install epel-release -y
     yum -y install gcc python34-pip python34-requests python34-devel docker git which python34-virtualenv
-    pip3 install pytest
-    pip3 install docker-compose
+    pip3 install virtualenv
     systemctl start docker
 }
 
 build_image() {
+    local push_registry
+    push_registry=$(make get-push-registry)
+    # login before build to be able to pull RHEL parent image
+    if [ -n "${QUAY_USERNAME}" -a -n "${QUAY_PASSWORD}" ]; then
+        docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} ${push_registry}
+    else
+        echo "Could not login, missing credentials for the registry"
+        exit 1
+    fi
+    # build image and tests
     make docker-build
 }
 
@@ -33,20 +49,12 @@ tag_push() {
 push_image() {
     local image_name
     local image_repository
-    local short_commit 
+    local short_commit
     local push_registry
     image_name=$(make get-image-name)
     image_repository=$(make get-image-repository)
     short_commit=$(git rev-parse --short=7 HEAD)
-    push_registry="push.registry.devshift.net"
-
-    # login first
-    if [ -n "${DEVSHIFT_USERNAME}" -a -n "${DEVSHIFT_PASSWORD}" ]; then
-        docker login -u ${DEVSHIFT_USERNAME} -p ${DEVSHIFT_PASSWORD} ${push_registry}
-    else
-        echo "Could not login, missing credentials for the registry"
-        exit 1
-    fi
+    push_registry=$(make get-push-registry)
 
     if [ -n "${ghprbPullId}" ]; then
         # PR build
