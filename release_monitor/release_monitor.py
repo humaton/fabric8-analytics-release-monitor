@@ -89,11 +89,13 @@ class ReleaseMonitor():
             self.pypi_feed = feedparser.parse(PYPI_URL + "rss/updates.xml")
         else:
             self.old_pypi_feed = self.pypi_feed
+            self.pypi_feed = feedparser.parse(PYPI_URL + "rss/updates.xml")
 
         if sorted(self.old_npm_feed.entries) == sorted(self.npm_feed.entries):
             self.npm_feed = feedparser.parse(NPM_URL + "-/rss")
         else:
             self.old_pypi_feed = self.pypi_feed
+            self.npm_feed = feedparser.parse(NPM_URL + "-/rss")
 
     def create_liveness_probe(self):
         """Liveness probe."""
