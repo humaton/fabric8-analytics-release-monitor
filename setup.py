@@ -22,12 +22,6 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=get_requirements(),
-    py_modules='cli',
-    scripts=['cli.py'],
-    entry_points='''
-        [console_scripts]
-        cli=cli:cli
-    ''',
     include_package_data=True,
     author='Tomas Hrcka',
     author_email='thrcka@redhat.com',

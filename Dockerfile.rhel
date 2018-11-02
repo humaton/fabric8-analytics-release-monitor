@@ -9,16 +9,16 @@ RUN useradd coreapi
 
 RUN mkdir -p /home/release_monitor/
 
-COPY . /tmp/release_monitor/
+COPY . /home/release_monitor/
+COPY release_monitor/ /home/release_monitor/
 COPY hack/run_release_monitor.sh /usr/bin/
 
-RUN pushd /tmp/release_monitor/ && \
+RUN pushd /home/release_monitor/ && \
     pip3 install --upgrade pip && pip install --upgrade wheel && \
     pip3 install . && \
-    pip3 install -r /tmp/release_monitor/requirements.txt && \
+    pip3 install -r /home/release_monitor/requirements.txt && \
     pip3 install git+https://github.com/fabric8-analytics/fabric8-analytics-worker.git@${F8A_WORKER_VERSION} && \
-    popd && \
-    rm -rf /tmp/release_monitor
+    popd \
 
 USER coreapi
 

@@ -2,4 +2,4 @@
 
 set -ex
 
-exec cli
+python3 /home/release_monitor/release_monitor.py
