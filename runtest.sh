@@ -17,7 +17,8 @@ function prepare_venv() {
         VIRTUALENV=`which virtualenv-3`
     fi
 
-	${VIRTUALENV} -p python3 venv && source venv/bin/activate && python3 `which pip3` install -r integration_tests/requirements.txt && python3 `which pip3` install -r tests/requirements.txt && python3 `which pip3` install -r requirements.txt
+	${VIRTUALENV} -p python3 venv && source venv/bin/activate && python3 `which pip3` install -r integration_tests/requirements.txt && python3 `which pip3` install -r tests/requirements.txt && python3 `which pip3` install -r requirements.txt && python3 `which pip3` install git+https://github.com/fabric8-analytics/fabric8-analytics-worker.git@561636c
+
 }
 
 
