@@ -139,3 +139,8 @@ class ReleaseMonitor():
 
         self.renew_rss_feeds()
         sleep(60*SLEEP_INTERVAL)
+
+
+if __name__ == '__main__':
+    monitor = ReleaseMonitor()
+    monitor.run()
