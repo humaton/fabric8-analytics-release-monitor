@@ -18,4 +18,3 @@ def after_all(context):
         context.release_monitor.kill()
     except docker.errors.APIError:
         print(context.release_monitor.logs())
-        raise

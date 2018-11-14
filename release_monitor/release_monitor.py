@@ -5,12 +5,9 @@
 import json
 import logging
 import os
-import signal
 import sys
-import time
 
 import feedparser
-import psutil
 import requests
 from f8a_worker.setup_celery import init_celery, init_selinon
 from selinon import run_flow
