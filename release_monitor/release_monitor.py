@@ -5,12 +5,9 @@
 import json
 import logging
 import os
-import signal
 import sys
-import time
 
 import feedparser
-import psutil
 import requests
 from f8a_worker.setup_celery import init_celery, init_selinon
 from selinon import run_flow
@@ -19,39 +16,6 @@ from release_monitor.defaults import NPM_URL, PYPI_URL, ENABLE_SCHEDULING, \
     PROBE_FILE_LOCATION, SLEEP_INTERVAL
 
 logger = logging.getLogger(__name__)
-
-
-def handler(signum, frame):
-    """Handle the liveness probe."""
-    logger.debug("Running Liveness Probe")
-    if ENABLE_SCHEDULING:
-        run_flow('livenessFlow', [None])
-    else:
-        logger.debug("Liveness probe - livenessFlow"
-                     " did not run since selinon is not initialized")
-
-    basedir = os.path.dirname(PROBE_FILE_LOCATION)
-    if not os.path.exists(basedir):
-        os.makedirs(basedir)
-
-    with open(PROBE_FILE_LOCATION, 'a'):
-        os.utime(PROBE_FILE_LOCATION, None)
-
-    logger.debug("Liveness probe - finished")
-
-
-def run_liveness():
-    """Run the liveness probe."""
-    # Remove all temp files to ensure that there are no leftovers
-    if os.path.isfile(PROBE_FILE_LOCATION):
-        os.remove(PROBE_FILE_LOCATION)
-
-    for pid in psutil.process_iter():
-        if pid.pid == 1:
-            pid.send_signal(signal.SIGUSR1)
-            time.sleep(10)
-
-    sys.exit(0 if os.path.isfile(PROBE_FILE_LOCATION) else 1)
 
 
 class ReleaseMonitor():
@@ -122,16 +86,30 @@ class ReleaseMonitor():
             self.pypi_feed = feedparser.parse(PYPI_URL + "rss/updates.xml")
         else:
             self.old_pypi_feed = self.pypi_feed
+            self.pypi_feed = feedparser.parse(PYPI_URL + "rss/updates.xml")
 
         if sorted(self.old_npm_feed.entries) == sorted(self.npm_feed.entries):
             self.npm_feed = feedparser.parse(NPM_URL + "-/rss")
         else:
             self.old_pypi_feed = self.pypi_feed
+            self.npm_feed = feedparser.parse(NPM_URL + "-/rss")
+
+    def create_liveness_probe(self):
+        """Liveness probe."""
+        if os.path.isfile(PROBE_FILE_LOCATION):
+            os.remove(PROBE_FILE_LOCATION)
+        else:
+            probe = os.path.dirname(PROBE_FILE_LOCATION)
+            if not os.path.exists(probe):
+                os.makedirs(probe)
+
+        return True
 
     def run(self):
         """Run the monitor."""
-        signal.signal(signal.SIGUSR1, handler)
+        self.create_liveness_probe()
         self.log.info("Registered signal handler for liveness probe")
+
         while True:
             for i in self.npm_feed.entries:
                 package_name = i['title']
@@ -161,8 +139,3 @@ class ReleaseMonitor():
 
         self.renew_rss_feeds()
         sleep(60*SLEEP_INTERVAL)
-
-
-if __name__ == '__main__':
-    monitor = ReleaseMonitor()
-    monitor.run()
