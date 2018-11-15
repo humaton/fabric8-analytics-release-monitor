@@ -79,6 +79,8 @@ objects:
             value: ${NPM_URL}
           - name: PYPI_URL
             value: ${PYPI_URL}
+          - name: PROBE_FILE_LOCATION
+            value: ${PROBE_FILE_LOCATION}
           image: "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
           name: f8a-release-monitor
           livenessProbe:
@@ -168,4 +170,10 @@ parameters:
   displayName: Number of deployment replicas
   required: true
   name: REPLICAS
+  value: "1"
+
+- description: Liveness probe file location
+  displayName: Liveness probe file location
+  required: true
+  name: PROBE_FILE_LOCATION
   value: "1"
