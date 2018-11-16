@@ -35,6 +35,7 @@ class ReleaseMonitor():
         self.npm_feed = feedparser.parse(NPM_URL + "-/rss")
         self.old_pypi_feed = None
         self.pypi_feed = feedparser.parse(PYPI_URL + "rss/updates.xml")
+        self.create_liveness_probe()
 
         if ENABLE_SCHEDULING:
             init_celery(result_backend=False)
@@ -97,17 +98,18 @@ class ReleaseMonitor():
     def create_liveness_probe(self):
         """Liveness probe."""
         if os.path.isfile(PROBE_FILE_LOCATION):
+            self.log.info("Clean existing liveness probe")
             os.remove(PROBE_FILE_LOCATION)
         else:
             probe = os.path.dirname(PROBE_FILE_LOCATION)
             if not os.path.exists(probe):
+                self.log.info("Create liveness probe")
                 os.makedirs(probe)
 
         return True
 
     def run(self):
         """Run the monitor."""
-        self.create_liveness_probe()
         self.log.info("Registered signal handler for liveness probe")
 
         while True:
