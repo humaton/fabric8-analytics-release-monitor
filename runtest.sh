@@ -28,5 +28,9 @@ behave ./integration_tests
 
 cd tests || exit
 PYTHONDONTWRITEBYTECODE=1 python3 "$(which pytest)" --cov=../release_monitor/ --cov-report term-missing --cov-fail-under=$COVERAGE_THRESHOLD -vv -s .
+
+cp -r ../.git ./
+codecov --token=a5dfdb4c-deb6-44d2-9d68-0c39cc26a9f6
+
 printf "%stests passed%s\n\n" "${GREEN}" "${NORMAL}"
 

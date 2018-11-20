@@ -8,6 +8,7 @@ backports.ssl-match-hostname==3.5.0.1  # via docker
 behave==1.2.5
 certifi==2017.7.27.1      # via requests
 chardet==3.0.4            # via requests
+codecov==2.0.15
 docker-pycreds==0.2.1     # via docker
 docker==2.5.1
 enum34==1.1.6             # via parse-type
