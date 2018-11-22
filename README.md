@@ -1,6 +1,6 @@
+[![Build Status](https://ci.centos.org/view/Devtools/job/devtools-fabric8-analytics-release-monitor-f8a-build-master/badge/icon)](https://ci.centos.org/view/Devtools/job/devtools-fabric8-analytics-release-monitor-f8a-build-master/)
 # fabric8-analytics-release-monitor
 Service for monitoring of latest updates to upstream packages
-
 
 ### Configuration
 Release monitor is configurable by following environment variables.
