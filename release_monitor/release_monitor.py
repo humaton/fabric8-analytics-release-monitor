@@ -121,8 +121,11 @@ class ReleaseMonitor():
                     requests.get(package_url,
                                  headers={'content-type':
                                           'application/json'}).text)
+                self.log.info("Processing "
+                              "package from npm: '%s':'%s'", package_name,
+                              package_latest_version.get('latest'))
                 if ENABLE_SCHEDULING and self.entry_not_in_previous_npm_set(i):
-                    self.log.info("Processing "
+                    self.log.info("Scheduling "
                                   "package from npm: '%s':'%s'", package_name,
                                   package_latest_version.get('latest'))
                     self.run_package_analisys(package_name,
@@ -130,9 +133,11 @@ class ReleaseMonitor():
                                               package_latest_version)
             for i in self.pypi_feed.entries:
                 package_name, package_latest_version = i['title'].split(' ')
+                self.log.info("Processing package from pypi: '%s':'%s'",
+                              package_name, package_latest_version)
                 if ENABLE_SCHEDULING and \
                         self.entry_not_in_previous_pypi_set(i):
-                    self.log.info("Processing package from pypi: '%s':'%s'",
+                    self.log.info("Scheduling package from pypi: '%s':'%s'",
                                   package_name, package_latest_version)
                     self.run_package_analisys(package_name,
                                               'pypi', package_latest_version)
