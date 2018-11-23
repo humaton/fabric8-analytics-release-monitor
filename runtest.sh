@@ -9,7 +9,7 @@ set -e
 set -x
 
 export COVERAGE_THRESHOLD=0
-
+export DEBUG=1
 function prepare_venv() {
     VIRTUALENV=`which virtualenv`
     if [ $? -eq 1 ]; then

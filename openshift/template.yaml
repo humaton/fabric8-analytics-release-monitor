@@ -81,6 +81,8 @@ objects:
             value: ${PYPI_URL}
           - name: PROBE_FILE_LOCATION
             value: ${PROBE_FILE_LOCATION}
+          - name: DEBUG
+            value: ${DEBUG}
           image: "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
           name: f8a-release-monitor
           livenessProbe:
@@ -177,3 +179,9 @@ parameters:
   required: true
   name: PROBE_FILE_LOCATION
   value: "1"
+
+- description: Variable which defines whether app is in debug mode
+  displayName: Enable debuging
+  required: true
+  name: DEBUG
+  value: "False"

@@ -13,7 +13,7 @@ from f8a_worker.setup_celery import init_celery, init_selinon
 from selinon import run_flow
 
 from release_monitor.defaults import NPM_URL, PYPI_URL, ENABLE_SCHEDULING, \
-    PROBE_FILE_LOCATION, SLEEP_INTERVAL
+    PROBE_FILE_LOCATION, SLEEP_INTERVAL, DEBUG
 
 logger = logging.getLogger(__name__)
 
@@ -121,9 +121,10 @@ class ReleaseMonitor():
                     requests.get(package_url,
                                  headers={'content-type':
                                           'application/json'}).text)
-                self.log.info("Processing "
-                              "package from npm: '%s':'%s'", package_name,
-                              package_latest_version.get('latest'))
+                if DEBUG:
+                    self.log.info("Processing "
+                                  "package from npm: '%s':'%s'", package_name,
+                                  package_latest_version.get('latest'))
                 if ENABLE_SCHEDULING and self.entry_not_in_previous_npm_set(i):
                     self.log.info("Scheduling "
                                   "package from npm: '%s':'%s'", package_name,
@@ -133,8 +134,9 @@ class ReleaseMonitor():
                                               package_latest_version)
             for i in self.pypi_feed.entries:
                 package_name, package_latest_version = i['title'].split(' ')
-                self.log.info("Processing package from pypi: '%s':'%s'",
-                              package_name, package_latest_version)
+                if DEBUG:
+                    self.log.info("Processing package from pypi: '%s':'%s'",
+                                  package_name, package_latest_version)
                 if ENABLE_SCHEDULING and \
                         self.entry_not_in_previous_pypi_set(i):
                     self.log.info("Scheduling package from pypi: '%s':'%s'",
