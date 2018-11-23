@@ -60,25 +60,25 @@ class ReleaseMonitor():
                       "with node_args: '%s'", 'bayesianFlow', node_args)
         return run_flow('bayesianFlow', node_args)
 
-    def entry_not_in_previous_npm_set(self, entry):
+    def entry_in_previous_npm_set(self, entry):
         """Check if the RSS entry has been in the old npm feed."""
         if self.old_npm_feed is None:
-            return True
+            return False
 
         if entry in self.old_npm_feed:
-            return False
-        else:
             return True
+        else:
+            return False
 
-    def entry_not_in_previous_pypi_set(self, entry):
+    def entry_in_previous_pypi_set(self, entry):
         """Check if the RSS entry has been in the old pypi feed."""
         if self.old_pypi_feed is None:
-            return True
+            return False
 
         if entry in self.old_pypi_feed:
-            return False
-        else:
             return True
+        else:
+            return False
 
     def renew_rss_feeds(self):
         """Fetch new RSS feed and save the old one for comparison."""
@@ -125,7 +125,8 @@ class ReleaseMonitor():
                     self.log.info("Processing "
                                   "package from npm: '%s':'%s'", package_name,
                                   package_latest_version.get('latest'))
-                if ENABLE_SCHEDULING and self.entry_not_in_previous_npm_set(i):
+                if ENABLE_SCHEDULING and \
+                        not self.entry_in_previous_npm_set(i):
                     self.log.info("Scheduling "
                                   "package from npm: '%s':'%s'", package_name,
                                   package_latest_version.get('latest'))
@@ -138,7 +139,7 @@ class ReleaseMonitor():
                     self.log.info("Processing package from pypi: '%s':'%s'",
                                   package_name, package_latest_version)
                 if ENABLE_SCHEDULING and \
-                        self.entry_not_in_previous_pypi_set(i):
+                        not self.entry_in_previous_pypi_set(i):
                     self.log.info("Scheduling package from pypi: '%s':'%s'",
                                   package_name, package_latest_version)
                     self.run_package_analisys(package_name,
