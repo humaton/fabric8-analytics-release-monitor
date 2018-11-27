@@ -178,7 +178,7 @@ parameters:
   displayName: Liveness probe file location
   required: true
   name: PROBE_FILE_LOCATION
-  value: "1"
+  value: "/tmp/release_monitoring/liveness.txt"
 
 - description: Variable which defines whether app is in debug mode
   displayName: Enable debuging
